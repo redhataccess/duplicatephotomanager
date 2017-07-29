@@ -1,0 +1,5 @@
+dhash==1.1
+Django==1.11.3
+pybktree==1.0
+pytz==2017.2
+Wand==0.4.4

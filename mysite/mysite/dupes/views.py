@@ -1,4 +1,3 @@
-import numpy
 import pickle
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.template import loader
