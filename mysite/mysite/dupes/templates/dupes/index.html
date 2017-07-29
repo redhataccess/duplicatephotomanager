@@ -1,0 +1,44 @@
+<table>
+  {% for dupe_list in dupe_lists %}
+  {% if dupe_list.1|length > 1 %}
+  <tr>
+  <th style="width:33%">
+    <img src="/static/{{dupe_list.0}}" class="stretchy" style="width:100%"/>
+  </th>
+  <td colspan="2" style="width:66%">
+    <table style="table-layout:fixed;width:100%">
+      <tr>
+      {% for dupe in dupe_list.1 %}
+        <td style="width=10%">
+          <img src="/static/{{dupe.1.filepath}}" class="stretchy" style="width:100%"/>
+        </td>
+        {% if forloop.counter|divisibleby:4 %}
+          </tr>
+          <tr>
+        {% endif %}
+      {% endfor %}
+    </table>
+  </td>
+  </tr>
+      {% if dupe_list.1|length < 4 %}
+        <tr><td style="height:200px"></td></tr>
+      {% endif %}
+  {% endif %}
+  {% endfor %}
+</table>
+
+<div class="pagination">
+    <span class="step-links">
+        {% if dupe_lists.has_previous %}
+            <a href="?page={{ dupe_lists.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ dupe_lists.number }} of {{ dupe_lists.paginator.num_pages }}.
+        </span>
+
+        {% if dupe_lists.has_next %}
+            <a href="?page={{ dupe_lists.next_page_number }}">next</a>
+        {% endif %}
+    </span>
+</div>
