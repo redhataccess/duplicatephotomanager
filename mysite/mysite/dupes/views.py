@@ -83,6 +83,9 @@ def create_dupe_index():
     for image in tree:
         print("tree image filepath: %s" % image.filepath)
         matches = tree.find(image, distance)
+        if not len(matches) > 1:
+            print("NO MATCHES FOUND\n")
+            continue
         print("FOUND MATCHES:::\n")
         for match in matches:
             print("\t\t%s\n" % match[1].filepath)
@@ -125,7 +128,7 @@ def index(request):
     #context = search_tree(MyImage(119349068980206672214822919316039535229L), distance)
     dupe_index = load_dupe_index()
 
-    paginator = Paginator(dupe_index.items(), 10)
+    paginator = Paginator(dupe_index.items(), 5)
     page = request.GET.get('page')
     try:
         dupe_lists = paginator.page(page)
