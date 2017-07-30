@@ -1,3 +1,38 @@
+<html>
+ <head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script>
+$(document).ready(function(){
+    $("img").click(function(){
+        alert("asdf");
+    });
+});
+
+$(document).keydown(function(e) {
+    switch(e.which) {
+        case 37: // left
+        $("#previous")[0].click();
+        break;
+
+        case 38: // up
+        break;
+
+        case 39: // right
+        $("#next")[0].click();
+        break;
+
+        case 40: // down
+        break;
+
+        default: return; // exit this handler for other keys
+    }
+    e.preventDefault(); // prevent the default action (scroll / move caret)
+});
+
+</script>
+</head>
+
+<body>
 <table>
   {% for dupe_list in dupe_lists %}
   {% if dupe_list.1|length > 1 %}
@@ -30,7 +65,7 @@
 <div class="pagination">
     <span class="step-links">
         {% if dupe_lists.has_previous %}
-            <a href="?page={{ dupe_lists.previous_page_number }}">previous</a>
+            <a id="previous" href="?page={{ dupe_lists.previous_page_number }}">previous</a>
         {% endif %}
 
         <span class="current">
@@ -38,7 +73,9 @@
         </span>
 
         {% if dupe_lists.has_next %}
-            <a href="?page={{ dupe_lists.next_page_number }}">next</a>
+            <a id="next" href="?page={{ dupe_lists.next_page_number }}">next</a>
         {% endif %}
     </span>
 </div>
+</body>
+</html>

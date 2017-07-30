@@ -9,7 +9,7 @@ import os
 import wand
 import re
 
-static_path = '/home/brose/Pictures/'
+static_path = '/home/brose/testing_images/'
 
 def load_tree():
     pickle_tree_path = "/home/brose/bktree"
