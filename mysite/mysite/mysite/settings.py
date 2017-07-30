@@ -26,6 +26,7 @@ SECRET_KEY = 's1@qjh_gbm7nafg^%xvynt0ce-0s^+=qhru#)yuly-%=hin5k3'
 DEBUG = True
 
 ALLOWED_HOSTS = [
+    '127.0.0.1',
     '192.168.0.26',
 ]
 
@@ -134,6 +135,7 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
     '/var/www/static/',
     '/home/brose/Pictures/',
+    '/home/brose/testing_images/',
 ]
 
 STATIC_URL = '/static/'
