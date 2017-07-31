@@ -25,6 +25,39 @@ body {
   display: inline-block;
   width: 60%;
 }
+
+img.selected {
+    opacity: 0.5;
+    filter: alpha(opacity=50); /* IE support */
+}
+
+.tooltip {
+    position: relative;
+    display: inline-block;
+    border-bottom: 1px dotted black;
+}
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    //width: ;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    
+    /* Position the tooltip */
+    position: absolute;
+    z-index: 1;
+    top: 100%;
+    left: 50%;
+    margin-left: -60px;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+}
+
 </style>
 
 </head>
@@ -39,14 +72,18 @@ body {
   {% for dupe_list in dupe_lists %}
   <tr>
   <th style="width:33%">
-    <img src="/static/{{dupe_list.0}}" class="stretchy" style="width:100%"/>
+      <img src="/static/{{dupe_list.0}}" style="width:100%"/>
+      <span>{{dupe_list.0}}</span>
   </th>
   <td colspan="2" style="width:66%">
     <table style="table-layout:fixed;width:100%">
       <tr>
       {% for dupe in dupe_list.1 %}
         <td style="width=10%">
-            <img distance="{{dupe.0}}" src="/static/{{dupe.1.filepath}}" class="stretchy" style="width:100%"/>
+           <div class="tooltip">
+            <img distance="{{dupe.0}}" src="/static/{{dupe.1.filepath}}" style="width:100%"/>
+            <span class="tooltiptext">{{dupe.1.filepath}}</span>
+           </div>
         </td>
         {% if forloop.counter|divisibleby:4 %}
           </tr>
@@ -84,18 +121,24 @@ var initialSliderValue = 5
 
 function showHideImages(value){
     $("img").show();
-    $("img").filter(function(){
+    var imgs = $("img").filter(function(){
         return parseInt($(this).attr("distance")) > value;
-    }).hide();
+    });
+    imgs.removeClass("selected");
+    imgs.hide();
 }
 
 $(document).ready(function(){
 
-    $("#distanceSlider").slider({max:10, value:5});
+    $("#distanceSlider").slider({max:20, value:5});
     showHideImages($("#distanceSlider").slider("value"));
 
     $("img").click(function(){
-        alert("click!");
+        if ($(this).hasClass("selected")){
+            $(this).removeClass("selected");
+        }else{
+            $(this).addClass("selected");
+        }
     });
 
     $("#distanceSlider").on("slide", function(event, ui) {
