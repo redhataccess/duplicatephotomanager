@@ -1,11 +1,97 @@
+<!DOCTYPE html>
 <html>
  <head>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<script>
+<!--meta name="viewport" content="width=device-width, initial-scale=1"-->
+<!--link rel="stylesheet" href="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css"-->
+<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
+<script src="https://code.jquery.com/ui/1.9.1/jquery-ui.min.js"></script>
+<style type="text/css">
+
+body {
+  font-family: helvetica, arial, sans-serif;
+  font-size: 10px;
+}
+
+#parentDiv {
+  background-color: #f9f9f9;
+  border: solid 1px #ddd;
+  padding: 10px;
+}
+
+#parentDiv span {}
+
+#distanceSlider {
+  display: inline-block;
+  width: 60%;
+}
+</style>
+
+</head>
+
+<body>
+<div id="parentDiv" class="ui-widget ui-corner-all" style="width:500px">
+  <span id="xpto">Distance:</span>&nbsp;&nbsp;
+  <div id="distanceSlider"></div>
+</div>
+
+<table>
+  {% for dupe_list in dupe_lists %}
+  <tr>
+  <th style="width:33%">
+    <img src="/static/{{dupe_list.0}}" class="stretchy" style="width:100%"/>
+  </th>
+  <td colspan="2" style="width:66%">
+    <table style="table-layout:fixed;width:100%">
+      <tr>
+      {% for dupe in dupe_list.1 %}
+        <td style="width=10%">
+            <img distance="{{dupe.0}}" src="/static/{{dupe.1.filepath}}" class="stretchy" style="width:100%"/>
+        </td>
+        {% if forloop.counter|divisibleby:4 %}
+          </tr>
+          <tr>
+        {% endif %}
+      {% endfor %}
+    </table>
+  </td>
+  </tr>
+      {% if dupe_list.1|length < 4 %}
+        <tr><td style="height:200px"></td></tr>
+      {% endif %}
+  {% endfor %}
+</table>
+
+<div class="pagination">
+    <span class="step-links">
+        {% if dupe_lists.has_previous %}
+            <a id="previous" href="?page={{ dupe_lists.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ dupe_lists.number }} of {{ dupe_lists.paginator.num_pages }}.
+        </span>
+
+        {% if dupe_lists.has_next %}
+            <a id="next" href="?page={{ dupe_lists.next_page_number }}">next</a>
+        {% endif %}
+    </span>
+</div>
+
+<script language="JavaScript">
 $(document).ready(function(){
     $("img").click(function(){
-        alert("asdf");
+        alert("click!");
     });
+
+$("#distanceSlider").slider({max:10, value:5});
+$("#distanceSlider").on("slide", function(event, ui) {
+  $("#xpto").text("Distance: " + ui.value)
+  $('img').show();
+  $('img').filter(function() {
+    return parseInt($(this).attr("distance")) > ui.value;
+  }).hide();
+});
 });
 
 $(document).keydown(function(e) {
@@ -28,54 +114,6 @@ $(document).keydown(function(e) {
     }
     e.preventDefault(); // prevent the default action (scroll / move caret)
 });
-
 </script>
-</head>
-
-<body>
-<table>
-  {% for dupe_list in dupe_lists %}
-  {% if dupe_list.1|length > 1 %}
-  <tr>
-  <th style="width:33%">
-    <img src="/static/{{dupe_list.0}}" class="stretchy" style="width:100%"/>
-  </th>
-  <td colspan="2" style="width:66%">
-    <table style="table-layout:fixed;width:100%">
-      <tr>
-      {% for dupe in dupe_list.1 %}
-        <td style="width=10%">
-          <img src="/static/{{dupe.1.filepath}}" class="stretchy" style="width:100%"/>
-        </td>
-        {% if forloop.counter|divisibleby:4 %}
-          </tr>
-          <tr>
-        {% endif %}
-      {% endfor %}
-    </table>
-  </td>
-  </tr>
-      {% if dupe_list.1|length < 4 %}
-        <tr><td style="height:200px"></td></tr>
-      {% endif %}
-  {% endif %}
-  {% endfor %}
-</table>
-
-<div class="pagination">
-    <span class="step-links">
-        {% if dupe_lists.has_previous %}
-            <a id="previous" href="?page={{ dupe_lists.previous_page_number }}">previous</a>
-        {% endif %}
-
-        <span class="current">
-            Page {{ dupe_lists.number }} of {{ dupe_lists.paginator.num_pages }}.
-        </span>
-
-        {% if dupe_lists.has_next %}
-            <a id="next" href="?page={{ dupe_lists.next_page_number }}">next</a>
-        {% endif %}
-    </span>
-</div>
 </body>
 </html>

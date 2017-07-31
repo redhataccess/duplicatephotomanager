@@ -9,9 +9,11 @@ import os
 import wand
 import re
 
-static_path = '/home/brose/testing_images/'
+#static_path = '/home/brose/testing_images/'
+static_path = '/home/brose/Pictures/'
 
 def load_tree():
+    #pickle_tree_path = "/home/brose/bktree2"
     pickle_tree_path = "/home/brose/bktree"
     if os.path.isfile(pickle_tree_path):
         return pickle.load(open(pickle_tree_path, "rb"))
@@ -96,6 +98,7 @@ def create_dupe_index():
     return dupe_index
 
 def load_dupe_index():
+    #dupe_index_path = "/home/brose/dupe_index2"
     dupe_index_path = "/home/brose/dupe_index"
     if os.path.isfile(dupe_index_path):
         return pickle.load(open(dupe_index_path, "rb"))
