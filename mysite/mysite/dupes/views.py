@@ -66,6 +66,7 @@ def find_largest(node_tuples, match_exact=True):
         if not original_hash:
             print("Looking at ORIGINAL key: %s" % filepath)
             original_hash = node_tuple[1].hashvalue
+            largest_image = node_tuple[1]
         print("\tcomparing with: %s" % filepath)
         if filehash == original_hash or not match_exact:
             hash_passes = True
@@ -79,7 +80,7 @@ def find_largest(node_tuples, match_exact=True):
     return largest_image
 
 def create_dupe_index():
-    distance = 10
+    distance = 20
     dupe_index = {}
     tree = load_tree()
     for image in tree:
@@ -92,8 +93,10 @@ def create_dupe_index():
         for match in matches:
             print("\t\t%s\n" % match[1].filepath)
         largest_image = find_largest(matches)
+        if not largest_image: # unsure why this is happening...
+            continue
         if matches and not dupe_index.get(image.filepath):
-            minus_key = [x for x in matches if x[1].filepath != largest_image.filepath]
+            minus_key = [x for x in matches if x[1] and x[1].filepath != largest_image.filepath]
             dupe_index[largest_image.filepath] = minus_key
     return dupe_index
 

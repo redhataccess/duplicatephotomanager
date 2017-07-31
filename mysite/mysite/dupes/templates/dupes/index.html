@@ -79,19 +79,29 @@ body {
 </div>
 
 <script language="JavaScript">
+
+var initialSliderValue = 5
+
+function showHideImages(value){
+    $("img").show();
+    $("img").filter(function(){
+        return parseInt($(this).attr("distance")) > value;
+    }).hide();
+}
+
 $(document).ready(function(){
+
+    $("#distanceSlider").slider({max:10, value:5});
+    showHideImages($("#distanceSlider").slider("value"));
+
     $("img").click(function(){
         alert("click!");
     });
 
-$("#distanceSlider").slider({max:10, value:5});
-$("#distanceSlider").on("slide", function(event, ui) {
-  $("#xpto").text("Distance: " + ui.value)
-  $('img').show();
-  $('img').filter(function() {
-    return parseInt($(this).attr("distance")) > ui.value;
-  }).hide();
-});
+    $("#distanceSlider").on("slide", function(event, ui) {
+        $("#xpto").text("Distance: " + ui.value)
+        showHideImages(ui.value);
+    });
 });
 
 $(document).keydown(function(e) {
