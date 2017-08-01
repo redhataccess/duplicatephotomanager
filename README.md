@@ -1,7 +1,7 @@
 # duplicatephotomanager
 This is a project to find and safely delete duplicate photos.
 
-last edited by Ben Rose on 07.29.2017
+last edited on 08.01.2017
 
 
 Currently it implements a dhash and kbtree mechanism to store/find distances in a reduced representation of each photo.
