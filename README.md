@@ -28,6 +28,10 @@ Steps to run
 1. the image should be replaced by an icon indicating that it could not be loaded
 1. in a terminal, go to the 'root' photos directory that you set before and run find . -iname 'deleteME\_\*' and you should see the ones you deleted come back in the results
 1. to actually delete them, run find . -iname 'deleteME\_\*' | xargs rm -f
+1. to change the names back, run something like this example (linux):
+
+`find . -iname 'deleteME_*' | sed 's/ /\\ /g' | sed 's/\(\(.*\)deleteME_\(.*\)\)/ mv \1 \2\3/g' | sh`
+
 
 The resulting duplicate listings are paginated, so there is a small navigation link at the very bottom, but the app responds to arrow keys as well.
 
