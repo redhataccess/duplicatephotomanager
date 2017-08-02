@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html>
  <head>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Expires" content="0" />
 <!--meta name="viewport" content="width=device-width, initial-scale=1"-->
 <!--link rel="stylesheet" href="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css"-->
 <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/themes/base/jquery-ui.css">
@@ -83,7 +86,7 @@ img.selected {
   <span id="xpto">Distance: 5</span>&nbsp;&nbsp;
   <div id="distanceSlider"></div>&nbsp;&nbsp;
   <span id="numSelected">Selected: 0</span>&nbsp;&nbsp;
-  <button class="button deleteButton">DELETE</button>
+  <button class="button deleteButton">'DELETE'</button>
 </div>
 
 <table>
@@ -151,6 +154,32 @@ function showHideImages(value){
 }
 
 $(document).ready(function(){
+
+    $("img").each(function () {
+        var d = new Date();
+        var originalSrc = $(this).attr('src');
+        $(this).attr('src', originalSrc+"?"+d.getTime());
+    });
+
+    $('.deleteButton').click(function(){
+        
+        selected_images = $("img[class*='selected']")
+        var paths = []
+        for (var i=0; i<selected_images.length; i++){
+            var path = selected_images[i].src;
+            var index = path.indexOf("?");
+            var qparams = path.substring(index);
+            var path = path.replace(qparams, "");
+            paths.push(path);
+        }
+        //alert(paths);
+        //sendData = {"instruction":"RENAME"; "file_paths":paths};
+        sendData = JSON.stringify({"instruction":"RENAME", "file_paths":paths});
+        $.post("/dupes/", sendData, function(data, status){
+            //alert("Data: " + data + "\nStatus: " + status);
+        });
+        location.reload();
+    });
 
     $("#distanceSlider").slider({max:20, value:5});
     showHideImages($("#distanceSlider").slider("value"));

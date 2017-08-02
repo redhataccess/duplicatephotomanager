@@ -1,4 +1,6 @@
 import pickle
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.template import loader
 from django.shortcuts import render
@@ -7,7 +9,7 @@ import dhash
 from pybktree import BKTree
 import os
 import wand
-import re
+import json, re, urllib, pipes
 
 #static_path = '/home/brose/testing_images/'
 static_path = '/home/brose/Pictures/'
@@ -109,39 +111,44 @@ def load_dupe_index():
         dupe_index = create_dupe_index()
         pickle.dump(dupe_index, open(dupe_index_path, "wb"))
         return dupe_index
-"""
-def search_tree(my_image, distance):
-    tree = load_tree()
-    print("tree is type: %s" % type(tree))
-    found = tree.find(my_image, distance)
-    pics = []
-    for distance, image in found:
-        print("tree item is type: %s" % type(image))
-        print("distance is %s" % distance)
-        print("item is %s" % image)
-        pics.append(image.filepath)
 
-    context = {
-        'images': pics,
-    }
-    #return render('dupes/index.html', context)
-    return context
-"""
-
-def index(request):
-    #distance = int(request.GET.get('distance', 0))
-    #context = search_tree(MyImage(320015714244132890896587944663344678851L), distance)
-    #context = search_tree(MyImage(119349068980206672214822919316039535229L), distance)
-    dupe_index = load_dupe_index()
-
-    paginator = Paginator(dupe_index.items(), 5)
-    page = request.GET.get('page')
-    try:
-        dupe_lists = paginator.page(page)
-    except PageNotAnInteger:
-        dupe_lists = paginator.page(1)
-    except EmptyPage:
-        dupe_lists = paginator.page(paginator.num_pages)
-    context = {'dupe_lists':dupe_lists}
-    return render(request, 'dupes/index.html', context)
+@csrf_exempt
+def dupes(request):
+    if request.method == 'GET':
+        dupe_index = load_dupe_index()
+    
+        paginator = Paginator(dupe_index.items(), 5)
+        page = request.GET.get('page')
+        try:
+            dupe_lists = paginator.page(page)
+        except PageNotAnInteger:
+            dupe_lists = paginator.page(1)
+        except EmptyPage:
+            dupe_lists = paginator.page(paginator.num_pages)
+        context = {'dupe_lists':dupe_lists}
+        return render(request, 'dupes/dupes.html', context)
+    elif request.method == 'POST':
+        body = request.body
+        try:
+            body_unicode = body.decode('utf-8')
+            body = json.loads(body_unicode)
+        except ValueError:
+            return HttpResponse(status=400, reason="invalid json format")
+        instruction = body.get('instruction', '')
+        if instruction.upper() == "RENAME":
+            paths_to_rename = body.get('file_paths', [])
+            for rename_path in paths_to_rename:
+                rename_path = urllib.unquote(rename_path)
+                rename_path = re.sub("^.*?static%s" % os.path.sep, '', rename_path, 1)
+                rename_path, file_name = os.path.split(rename_path)
+                new_name = "deleteME_%s" % file_name
+                old_path = os.path.join(static_path, rename_path, file_name)
+                new_path = os.path.join(static_path, rename_path, new_name)
+                print("Moving")
+                print(old_path)
+                print("To")
+                print(new_path)
+                print("----------------"*4)
+                os.rename(old_path, new_path)
+        return HttpResponse("OK")        
 
