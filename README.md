@@ -29,6 +29,8 @@ Steps to run
 1. in a terminal, go to the 'root' photos directory that you set before and run find . -iname 'deleteME\_\*' and you should see the ones you deleted come back in the results
 1. to actually delete them, run find . -iname 'deleteME\_\*' | xargs rm -f
 
+The resulting duplicate listings are paginated, so there is a small navigation link at the very bottom, but the app responds to arrow keys as well.
+
 It is planned to create a preview page of images 'deleted' (renamed) and buttons to really delete them or undo (which will just remove the prepended 'deleteME\_' from the file name.
 
 **Note: It may take significant amount of time to load the first time you load the page, depending on your system and the number of images.**
